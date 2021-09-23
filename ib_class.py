@@ -27,7 +27,7 @@ class IB_App(EWrapper, EClient):
 
     def position(self, account: str, contract, position: float, avgCost: float):
 
-        if contract.secType == "OPT":
+        if contract.secType == "OPT" and position != 0:
             self.positions_options.append({'合約類型':contract.secType,
                 '合約代碼':contract.localSymbol,
                 '頭寸': position,
@@ -35,6 +35,8 @@ class IB_App(EWrapper, EClient):
                 '成本價': round(avgCost/int(contract.multiplier), 2),
                 '打和點': breakpoint(contract, avgCost, position),
                 '合約方向': contract.right,
+                '最後交易日': contract.lastTradeDateOrContractMonth,
+                '剩下天數': remaining_day(contract.lastTradeDateOrContractMonth),
                 '底層證券': contract.symbol,
                 '合約ID': contract.conId,
                 '合約貨幣':contract.currency,
@@ -43,7 +45,6 @@ class IB_App(EWrapper, EClient):
                 'contract.deltaNeutralContract': contract.deltaNeutralContract,
                 'contract.exchange': contract.exchange,
                 'contract.includeExpired':contract.includeExpired,
-                'contract.lastTradeDateOrContractMonth': contract.lastTradeDateOrContractMonth,
                 'contract.multiplier': contract.multiplier,
                 'contract.primaryExchange': contract.primaryExchange,
                 'contract.secId': contract.secId,
@@ -52,8 +53,12 @@ class IB_App(EWrapper, EClient):
 
 
     def positionEnd(self):
-        for i in self.positions_options:
-            print(i)
+        import json
+        with open("templates/positions.json", "w", encoding="utf-8") as j:
+            j.write(json.dumps(self.positions_options, indent=1, ensure_ascii=False,))
+        # for i in self.positions_options:
+        #     print(i)
+        print("positionEnd")
         
     def pnl(self, reqId: int, dailyPnL: float, unrealizedPnL: float, realizedPnL: float):
         print(reqId, dailyPnL, unrealizedPnL, realizedPnL)

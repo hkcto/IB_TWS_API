@@ -1,11 +1,4 @@
-class A:
-    def __init__(self) -> None:
-        self.n = 2
+from ib_function import remaining_day
 
-    def add(self, m):
-        print(f"self is {self} @A.add")
-        self.n += m
-
-
-a = A()
-a.add(1)
+remaining = remaining_day("20220121")
+print(remaining)

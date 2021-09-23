@@ -6,7 +6,7 @@ def breakpoint(contract, avgCost, position):
     """
 
     數量 = position
-    print(position)
+    # print(position)
     # 數量為 0 即為己平倉, 無需再計算
     if 數量 == 0:
         return 0
@@ -24,3 +24,15 @@ def breakpoint(contract, avgCost, position):
     # Short 
     price = 行使價 - 期權金
     return price
+
+
+def remaining_day(day: str):
+    """計算期權剩餘天數
+    day: 為一個字字符串.
+    格式: 20220121"""
+
+    from datetime import datetime
+    
+    today = datetime.today()
+    day = datetime.strptime(day, "%Y%m%d")
+    return (day - today).days
