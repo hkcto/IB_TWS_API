@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script type="text/javascript">
+
+        // 一旦 socket 被建立，我们就应该监听 socket 上的事件。一共有 4 个事件：
+        // open —— 连接已建立，
+        // message —— 接收到数据，
+        // error —— WebSocket 错误，
+        // close —— 连接已关闭。
+
+        // 新建一個 websocket client 物件
+        let ws = new WebSocket("ws://192.168.1.158:8765");
+        
+        // onopen 事件,websocket 己建立連接
+        ws.onopen = function(){
+            console.log("成功連接 websocket")
+            ws.send("JavaScript")
+        };
+
+        // onmessage 事件, 接收到的數據.
+        ws.onmessage = function(received){
+            console.log("from Server: ", received.data)
+        };
+
+        // onclose事件, 連接己關閉
+        ws.onclose = function(close){
+            if (close.wasClean) {
+                console.log('[close] Connection closed cleanly, code=${close.code} reason=${close.reason}');}
+            else {
+                // 例如服务器进程被杀死或网络中断
+                // 在这种情况下，event.code 通常为 1006
+                console.log('[close] Connection died');
+            };
+        };
+        
+        onerror = function(error) {
+            console.log(`[error] ${error.message}`);
+        };
+    </script>
+
+
+</body>
+</html>

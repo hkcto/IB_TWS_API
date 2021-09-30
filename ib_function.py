@@ -1,3 +1,5 @@
+from ibapi.contract import Contract
+
 def breakpoint(contract, avgCost, position):
     """# 期權打和點計算
     ## 計算方法
@@ -25,7 +27,6 @@ def breakpoint(contract, avgCost, position):
     price = 行使價 - 期權金
     return price
 
-
 def remaining_day(day: str):
     """計算期權剩餘天數
     day: 為一個字字符串.
@@ -35,4 +36,15 @@ def remaining_day(day: str):
     
     today = datetime.today()
     day = datetime.strptime(day, "%Y%m%d")
-    return (day - today).days
+    return (day - today).days + 1
+
+def contractList(c: Contract):
+    contract = Contract()
+    contract.symbol = c.symbol
+    contract.secType = c.secType
+    contract.exchange = "SMART"
+    contract.currency = 'USD'
+    contract.primaryExchange = "NASDAQ"
+
+    return contract
+    

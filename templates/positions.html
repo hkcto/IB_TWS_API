@@ -7,22 +7,29 @@
     <title>Positions</title>
 </head>
 <body>
-    <table border="1" id="options">
-        <thead><tr><th>期權</th></tr></thead>
-        <tbody>
-            <tr><th>合約代碼</th><th>頭寸</th><th>行駛價</th><th>成本價</th><th>打和點</th><th>最後交易日</th></tr>
-            {% for i in options %}
+
+    <!-- options table -->
+<div>
+    <table class="table-sortable">
+        <thead>
             <tr>
-                <td>{{ i["合約代碼"] }}</td>
-                <td>{{ i["頭寸"] }}</td>
-                <td>{{ i["行駛價"] }}</td>
-                <td>{{ i["成本價"] }}</td>
-                <td>{{ i["打和點"] }}</td>
-                <td>{{ i["最後交易日"] }}</td>
+                <th>合約代碼</th>
+                <th>頭寸</th>
+                <th>行駛價</th>
+                <th>成本價</th>
+                <th>打和點</th>
+                <th>Call|Put</th>
+                <th>最後交易日</th>
+                <th>剩餘天數</th>
             </tr>
-            {% endfor %}
+        </thead>
+        <tbody id="tbody">
         </tbody>
         
     </table>
+</div>
+    <!-- load javascript -->
+    <script type="text/javascript" src="static/table.js"></script>
+
 </body>
 </html>
