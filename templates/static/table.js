@@ -1,3 +1,9 @@
+// 格式化字串,去除空格
+function cleanStr(str){
+    let s = str.split(" ").join("");
+    return s;
+}
+
 // 表格數據成生 WebSocket
 let ws = new WebSocket("ws://localhost:8765");
 
@@ -8,23 +14,33 @@ ws.onopen = function(event){
 }
 
 ws.onmessage = function(msg){
-    const obj = JSON.parse(msg.data);
-    let html = document.getElementById('tbody').innerText
-    obj.forEach(element => {
-        html += `<tr>
-            <td>${element.合約代碼}</td>
-            <td>${element.頭寸}</td>
-            <td>${element.行駛價}</td>
-            <td>${element.成本價}</td>
-            <td>${element.打和點}</td>
-            <td>${element.合約方向}</td>
-            <td>${element.最後交易日}</td>
-            <td>${element.剩餘天數}</td>
-        </tr>`
-    });
 
-    // console.log(html)
-    document.getElementById("tbody").innerHTML=html
+    const obj = JSON.parse(msg.data);
+    let key = (Object.keys(obj))
+    switch (key[0]) {
+        case 'positions':
+            console.log('positions case')
+            let html = document.getElementById('tbody').innerText;
+            // 併接 tbody html code
+            obj['positions'].forEach(element => {
+            html += `<tr>
+                <td>${element.合約代碼}</td>
+                <td>${element.頭寸}</td>
+                <td>${element.行駛價}</td>
+                <td>${element.成本價}</td>
+                <td id=${cleanStr(element.合約代碼)}>NaN</td>
+                <td>${element.打和點}</td>
+                <td>${element.合約方向}</td>
+                <td>${element.最後交易日}</td>
+                <td>${element.剩餘天數}</td>
+                </tr>`});
+            
+            // 修改tbody html code
+            document.getElementById("tbody").innerHTML=html
+            break;
+    
+        default:
+            break;};
 }
 
 ws.onerror = function(error){
@@ -73,3 +89,7 @@ document.querySelectorAll(".table-sortable th").forEach(headerCell => {
         sortTableByColumn(tableElement, headerIndex, !currentIsAscending);
     });
 });
+
+
+
+// 

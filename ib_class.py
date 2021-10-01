@@ -1,8 +1,10 @@
-
+from ibapi.contract import Contract
 from ibapi.client import EClient
 from ibapi.wrapper import EWrapper
+from ibapi.ticktype import TickType, TickTypeEnum
 from datetime import datetime
 import ib_function as ibfnc
+import json
 
 
 class IB_App(EWrapper, EClient):
@@ -11,11 +13,12 @@ class IB_App(EWrapper, EClient):
     def __init__(self):
         EClient.__init__(self, self)
         
-        self.account = "U3821703"
-        print(datetime.now())
-        self.account = ""
-        self.positions_options = []
-        self.positions_contractList = []
+        self.ACCOUNT = "U3821703" # IB Account
+        self.positions_options: list = [] # 持倉期權頭寸
+        self.positions_contractList = [] # 持倉所有合約頭寸
+        
+        self.reqTableId = 1000
+        self.reqTable: dict = {}
 
 
 
@@ -26,10 +29,21 @@ class IB_App(EWrapper, EClient):
         self.account = accountsList
         # return super().managedAccounts(accountsList)
         
-    def position(self, account: str, contract, position: float, avgCost: float):
+    def position(self, account: str, contract: Contract, position: float, avgCost: float):
+        
+        # 檢查合約的交易所是否為空,空設置為: SMART, reqMktdata()需要交易的值,不能為空.
+        contract.exchange = ibfnc.exchangeSmart(contract.exchange)
+        
+        # 生成 reqId 對應表, dict 類型保存
+        self.reqTable[contract.localSymbol] = self.reqTableId
+        self.reqTableId = self.reqTableId + 1
 
         if contract.secType == "OPT" and position != 0:
+            
+            # 添加持倉合約頭寸
             self.positions_contractList.append(contract)
+            
+            # 持倉選擇,這裡是期權頭寸
             self.positions_options.append({'合約類型':contract.secType,
                 '合約代碼':contract.localSymbol,
                 '頭寸': position,
@@ -54,18 +68,27 @@ class IB_App(EWrapper, EClient):
                 'contract.tradingClass': contract.tradingClass})
 
     def positionEnd(self):
-        import json
+        
         with open("templates/positions.json", "w", encoding="utf-8") as j:
-            j.write(json.dumps(self.positions_options, indent=1, ensure_ascii=False,))
+            options: dict= {"positions": self.positions_options}
+            j.write(json.dumps(options, indent=1, ensure_ascii=False,))
+        
         # for i in self.positions_options:
+        #     i: Contract
         #     print(i)
-        print("positionEnd")
 
-    def tickPrice(self, reqId, tickType, price: float, attrib):
-        print({'reqId': reqId, 'tickType': tickType, 'price': price, 'attrib': attrib})
+    def tickPrice(self, reqId, tickType: TickType, price: float, attrib):
+
+        # dict value find key
+        localSymbol = list(self.reqTable.keys())[list(self.reqTable.values()).index(reqId)]
+        print({localSymbol: reqId, 'tickType': tickType, 'price': price, 'attrib': attrib})
+        
         # return super().tickPrice(reqId, tickType, price, attrib)
+    
+    # def tickGeneric(self, reqId, tickType: TickType, value: float):
+    #     print("tickGeneric", {"reqId":reqId, "tickType":tickType, "value":value})
+    #     # return super().tickGeneric(reqId, tickType, value)
 
     # def pnl(self, reqId: int, dailyPnL: float, unrealizedPnL: float, realizedPnL: float):
     #     print(reqId, dailyPnL, unrealizedPnL, realizedPnL)
     #     # return super().pnl(reqId, dailyPnL, unrealizedPnL, realizedPnL)
-    

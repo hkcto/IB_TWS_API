@@ -38,13 +38,23 @@ def remaining_day(day: str):
     day = datetime.strptime(day, "%Y%m%d")
     return (day - today).days + 1
 
-def contractList(c: Contract):
-    contract = Contract()
-    contract.symbol = c.symbol
-    contract.secType = c.secType
-    contract.exchange = "SMART"
-    contract.currency = 'USD'
-    contract.primaryExchange = "NASDAQ"
+def exchangeSmart(exchange):
+    """exchange 交易所是否為空
+    空:傳回  SMART"""
+    if exchange != "":
+        return exchange
+    return "SMART"
 
-    return contract
+
+
+
+# def contractList(c: Contract):
+#     contract = Contract()
+#     contract.symbol = c.symbol
+#     contract.secType = c.secType
+#     contract.exchange = "SMART"
+#     contract.currency = 'USD'
+#     # contract.primaryExchange = "NASDAQ"
+
+#     return contract
     

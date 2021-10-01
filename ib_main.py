@@ -2,7 +2,7 @@ from ib_class import IB_App
 from ibapi.contract import Contract
 
 class TWS:
-
+    
     def __init__(self) -> None:
         self.IB_CONFIG = {"host": "192.168.1.158", "port": 7497, "clientId": 0}
         self.ib = IB_App()
@@ -27,18 +27,9 @@ if __name__=="__main__":
     ib_td.start()
     ib_td.join(3)
 
+    # reqMktData() 請求市場數據, 注要用於串流報價
+    for contract in app.ib.positions_contractList:
+        contract: Contract
 
-
-    # for contract in app.ib.positions_contractList:
-    #     print(contract)
-    # contract: Contract = app.ib.positions_contractList[0]
-    # print(f"contract.exchange: {contract.exchange}")
-    # contract = Contract()
-    # contract.symbol = "AAPL"
-    # contract.secType = "STK"
-    # contract.exchange = "SMART"
-    # contract.currency = "USD"
-    # contract.primaryExchange = "NASDAQ"
-    # app.ib.reqMktData(1001, contract, "", False, False, [])
-    # print('end')
-    # app.ib.cancelMktData(1001)    
+        if contract.secType == "OPT":   # 請求期權市場數據
+            app.ib.reqMktData(app.ib.reqTable[contract.localSymbol], contract, "", False, False, [])

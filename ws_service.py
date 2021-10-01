@@ -2,10 +2,9 @@ import asyncio
 import websockets
 
 with open("templates/positions.json", "r", encoding="utf-8") as f:
-    data = f.read()
+    data:str = f.read()
 
 class WS:
-
 
     def __init__(self) -> None:
         pass
@@ -23,6 +22,7 @@ class WS:
             await asyncio.Future()  # run forever
 
     def run(self):
+        print("WebSocket Service Running")
         asyncio.run(self.main())
 
 if __name__=="__main__":
