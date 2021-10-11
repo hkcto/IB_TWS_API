@@ -14,9 +14,11 @@ ws.onopen = function(event){
 }
 
 ws.onmessage = function(msg){
+    // console.log(msg)
+    
+    let obj = JSON.parse(msg.data);
+    let key = (Object.keys(obj));
 
-    const obj = JSON.parse(msg.data);
-    let key = (Object.keys(obj))
     switch (key[0]) {
         case 'positions':
             console.log('positions case')
@@ -30,6 +32,8 @@ ws.onmessage = function(msg){
                 <td>${element.成本價}</td>
                 <td id=${cleanStr(element.合約代碼)}>NaN</td>
                 <td>${element.打和點}</td>
+                <td>NaN(IntrinsicValue)</td>
+                <td>NaN(TimeValue)</td>
                 <td>${element.合約方向}</td>
                 <td>${element.最後交易日}</td>
                 <td>${element.剩餘天數}</td>
@@ -37,9 +41,21 @@ ws.onmessage = function(msg){
             
             // 修改tbody html code
             document.getElementById("tbody").innerHTML=html
+
             break;
-    
+        case 'price':
+            // 更新 lastprice
+            // console.log(obj['price'][0])
+            obj['price'].forEach(element => {
+                const localsymbol = cleanStr(element.localsymbol)
+                document.getElementById(localsymbol).innerText = element.price
+            })
+            // msg
+            // const localsymbol = cleanStr(obj['localsymbol'])
+            // document.getElementById(localsymbol).innerText = obj['price']
+            break;
         default:
+            console.log("default:", msg);
             break;};
 }
 

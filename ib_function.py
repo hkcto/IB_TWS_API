@@ -1,10 +1,20 @@
 from ibapi.contract import Contract
 
-def breakpoint(contract, avgCost, position):
-    """# 期權打和點計算
-    ## 計算方法
-    ### 買入期權: 打和點 = 行使價 + 期權金
-    ### 賣出期權: 打和點 = 行使價 - 期權金
+
+def breakpoint(contract, avgCost, position) -> int:
+    """期權打和點計算.
+
+    計算方法:
+    買入期權: 打和點 = 行使價 + 期權金
+    賣出期權: 打和點 = 行使價 - 期權金
+    
+    Args:
+        contract: Contract class
+        avgCost: 平均成本價
+        position: 持有頭寸數量
+    
+    Returns:
+        int(price)
     """
 
     數量 = position
@@ -21,11 +31,11 @@ def breakpoint(contract, avgCost, position):
     # Long 
     if 數量 > 0:
         price = 行使價 + 期權金
-        return price
+        return round(price, 2)
 
     # Short 
     price = 行使價 - 期權金
-    return price
+    return round(price, 2)
 
 def remaining_day(day: str):
     """計算期權剩餘天數
