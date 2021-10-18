@@ -109,18 +109,26 @@ class IB_App(EWrapper, EClient):
         
 
     def tickPrice(self, reqId, tickType: TickType, price: float, attrib):
-        data =self.df[self.df["ID"]==int(reqId)].to_dict("records")[0]
+        """
+        tickType:
+        4 = LastPrice
         
-        
-        # dict value find key
-        # localSymbol = list(self.reqTable.keys())[list(self.reqTable.values()).index(reqId)]
-        # print({"localSymbol": reqId, 'tickType': tickType, 'price': price, 'attrib': attrib})
+        all tickType:
+        https://interactivebrokers.github.io/tws-api/tick_types.html
+        """
+        if tickType == 4:
+            data =self.df[self.df["ID"]==int(reqId)].to_dict("records")[0]
+            
+            
+            # dict value find key
+            # localSymbol = list(self.reqTable.keys())[list(self.reqTable.values()).index(reqId)]
+            # print({"localSymbol": reqId, 'tickType': tickType, 'price': price, 'attrib': attrib})
 
-        # print({"price": [{"reqId": reqId, "localsymbol": data['LocalSymbol'],
-        #       "price": price}]})
-        self.queue.put({
-            "price": [{"reqId": reqId,
-                       "localsymbol": data['LocalSymbol'], "tickType": tickType, "price": price}]})
+            # print({"price": [{"reqId": reqId, "localsymbol": data['LocalSymbol'],
+            #       "price": price}]})
+            self.queue.put({
+                "price": [{"reqId": reqId,
+                        "localsymbol": data['LocalSymbol'], "tickType": tickType, "price": price}]})
 
 
 

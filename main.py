@@ -30,9 +30,17 @@ time.sleep(2)
 
 df: pd.DataFrame = ib.df
 options = df[df["SecType"] == "OPT"]
-options = options.to_dict("records")
-for contract in options:
+# options = options.to_dict("records")
+for contract in options.to_dict("records"):
     ib.reqMktData(contract['ID'], contract['Contract'], "", False, False, [])
+
+
+optSymbol = set(options['Symbol'].to_list())
+for i in optSymbol:
+    df = df.append({"ID": len(df)+1000, "LocalSymbol": i, "Symbol": i, "SecType": "STK"}, ignore_index=True)
+
+# optSymbol = list(set(optSymbol))
+print(df)
 
 # while True:
 #     if not q.empty():
